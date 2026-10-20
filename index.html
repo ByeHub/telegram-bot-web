@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unlock Video</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #121212; color: white; padding-top: 50px; }
+        .card { background: #1e1e1e; padding: 30px; border-radius: 12px; display: inline-block; width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .btn { padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; box-sizing: border-box; }
+        .btn-ad { background: #007bff; color: white; text-decoration: none; display: inline-block; }
+        .btn-unlock { background: #28a745; color: white; }
+        .btn-unlock:disabled { background: #555; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🎥 Unlock Your Video</h2>
+    <p>Ad එක Click කර තත්පර 10ක් රැඳී සිටින්න.</p>
+
+    <!-- Monetag Ad Link එක මෙහි ඇතුළත් කර ඇත -->
+    <a href="https://uplcm.com/4/10303157" target="_blank" onclick="startTimer()" class="btn btn-ad">
+        1. Visit Advertisement
+    </a>
+
+    <p id="timer-text" style="margin-top:15px; color:#aaa; font-size: 14px;"></p>
+
+    <!-- Unlock Button -->
+    <button id="unlockBtn" class="btn btn-unlock" disabled onclick="sendVideo()">
+        2. Get Video on Telegram
+    </button>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const vid = urlParams.get('vid');
+    const user = urlParams.get('user');
+
+    let timeLeft = 10;
+    let timer;
+
+    function startTimer() {
+        document.getElementById('timer-text').innerText = `තත්පර ${timeLeft} ක් රැඳී සිටින්න...`;
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = `තත්පර ${timeLeft} ක් රැඳී සිටින්න...`;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById('timer-text').innerText = "✅ Unlock කිරීමට සූදානම්!";
+                document.getElementById('unlockBtn').disabled = false;
+            }
+        }, 1000);
+    }
+
+    async function sendVideo() {
+        const response = await fetch('/api/unlock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ vid: vid, user: user })
+        });
+
+        const res = await response.json();
+        if (res.status === 'success') {
+            alert("✅ වීඩියෝව ඔබගේ Telegram Chat එකට එවන ලදී!");
+        } else {
+            alert("❌ Error: " + res.message);
+        }
+    }
+</script>
+
+</body>
+</html>
